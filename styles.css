@@ -414,7 +414,7 @@ code {
 .glass--peel .glass__body h2,
 .glass--peel .glass__body p {
   color: var(--peel-fg);
-  transition: color 180ms ease-in-out;
+  transition: color 420ms ease-in-out;
 }
 
 .glass--peel .glass__body p {
