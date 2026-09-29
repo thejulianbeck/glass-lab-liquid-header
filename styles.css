@@ -409,15 +409,12 @@ code {
   --peel-muted: rgba(11, 11, 15, 0.72);
 }
 
-.glass--peel .glass {
-  color: var(--peel-fg);
-  transition: color 0.18s ease;
-}
-
+.glass--peel .glass,
+.glass--peel .glass__body,
 .glass--peel .glass__body h2,
-.glass--peel .glass__body p,
-.glass--peel .glass__body {
+.glass--peel .glass__body p {
   color: var(--peel-fg);
+  transition: color 180ms ease-in-out;
 }
 
 .glass--peel .glass__body p {
