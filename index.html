@@ -9,24 +9,6 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <svg class="svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
-    <defs>
-      <filter id="glass-refraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-        <feOffset in="displaced" dx="0" dy="0" result="rChannel" />
-        <feOffset in="displaced" dx="0" dy="0" result="bChannel" />
-        <feColorMatrix in="rChannel" type="matrix"
-          values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
-        <feColorMatrix in="displaced" type="matrix"
-          values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
-        <feColorMatrix in="bChannel" type="matrix"
-          values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
-        <feBlend in="red" in2="green" mode="screen" result="rg" />
-        <feBlend in="rg" in2="blue" mode="screen" />
-      </filter>
-    </defs>
-  </svg>
 
   <header class="topbar" role="banner">
     <div class="topbar__inner">
@@ -36,14 +18,27 @@
     </div>
   </header>
 
+
+  <!-- Fixed viewport peel: stays on screen while stage backgrounds scroll underneath -->
+  <aside class="glass glass--card glass--peel" data-glass aria-label="Cáscara fija de Liquid Glass">
+    <span class="glass__noise" aria-hidden="true"></span>
+    <span class="glass__specular" aria-hidden="true"></span>
+    <div class="glass__body">
+      <h2>Cáscara fija</h2>
+      <p>Scrollea: el material muestrea los fondos que pasan detrás.</p>
+    </div>
+  </aside>
+
   <main>
     <section class="intro">
       <p class="eyebrow">Safari-first · lab público</p>
       <h1>Material Liquid Glass</h1>
       <p class="lede">
-        Emulación web del cristal / frosted / refraction. El protagonista es el
+        Emulación web del cristal / frosted glass. El protagonista es el
         <strong>material</strong>, no una barra de UI. Tres vehículos mínimos
-        (pill, card, panel) lo muestran sobre fondos ricos. Ajusta los sliders.
+        (pill, card, panel) lo muestran sobre fondos ricos. La
+        <strong>cáscara fija</strong> abajo al centro permanece en el viewport:
+        scrollea y mira cómo reacciona sobre cada fondo. Ajusta los sliders.
       </p>
     </section>
 
@@ -77,7 +72,7 @@
           <span class="glass__specular" aria-hidden="true"></span>
           <div class="glass__body">
             <h2>Panel</h2>
-            <p>Superficie más ancha para juzgar refracción, grano y especular mientras scrolleas.</p>
+            <p>Superficie más ancha para juzgar blur, grano y especular mientras scrolleas.</p>
             <p class="glass__hint">Prueba los presets Frost / Líquido abajo.</p>
           </div>
         </div>
@@ -166,14 +161,6 @@
           <input type="range" id="specular" min="0" max="1" step="0.01" value="0.45" />
         </label>
         <label class="ctrl">
-          <span class="ctrl__label">Refracción / distorsión <output id="out-refraction">4</output></span>
-          <input type="range" id="refraction" min="0" max="24" step="1" value="4" />
-        </label>
-        <label class="ctrl">
-          <span class="ctrl__label">Aberración cromática (px) <output id="out-chroma">0.6</output></span>
-          <input type="range" id="chroma" min="0" max="3" step="0.1" value="0.6" />
-        </label>
-        <label class="ctrl">
           <span class="ctrl__label">Noise / grain <output id="out-noise">0.12</output></span>
           <input type="range" id="noise" min="0" max="0.45" step="0.01" value="0.12" />
         </label>
@@ -196,14 +183,14 @@
       <h2>Límites honestos</h2>
       <p>
         Esto emula Liquid Glass en la web con <strong>backdrop-filter</strong>
-        (+ <code>-webkit-backdrop-filter</code>) y filtros SVG (ruido / desplazamiento / canales RGB).
+        (+ <code>-webkit-backdrop-filter</code>), tinte, borde, especular, noise y sombras.
         <strong>No es</strong> el material de sistema Liquid Glass de iOS 26 / visionOS:
         no hay lente real del compositor OS ni el mismo muestreo de capas detrás del chrome.
       </p>
       <ul>
-        <li>Safari iOS/iPadOS soporta backdrop-filter; el rendimiento baja si el blur es muy alto o hay muchos filtros SVG activos.</li>
-        <li>La “refracción” aquí es <code>feDisplacementMap</code> + offsets RGB; no es óptica física.</li>
-        <li>Si un filtro falla, el material sigue siendo usable (tinte + borde + sombra).</li>
+        <li>Safari iOS/iPadOS soporta backdrop-filter; el rendimiento baja si el blur es muy alto.</li>
+        <li>No hay distorsión ni aberración cromática: el stack es profesional (blur + color + borde + luz).</li>
+        <li>Si <code>backdrop-filter</code> no está disponible, el material sigue usable (tinte + borde + sombra).</li>
       </ul>
     </section>
 

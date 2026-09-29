@@ -10,8 +10,6 @@
   --glass-border-opacity: 0.35;
   --glass-border-width: 0.5px;
   --glass-specular: 0.45;
-  --glass-refraction: 4;
-  --glass-chroma: 0.6;
   --glass-noise: 0.12;
   --glass-radius: 22px;
   --glass-inner-shadow: 0.25;
@@ -54,13 +52,6 @@ body {
   min-height: 100dvh;
 }
 
-.svg-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
 
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -249,10 +240,6 @@ code {
   will-change: backdrop-filter;
 }
 
-.glass.glass--refract {
-  -webkit-filter: url(#glass-refraction);
-  filter: url(#glass-refraction);
-}
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
   .glass {
@@ -341,11 +328,39 @@ code {
   padding: 26px 28px;
 }
 
+/* Fixed viewport peel — scroll-reactive material sample */
+.glass--peel {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%) translateZ(0);
+  width: min(320px, calc(100vw - 32px));
+  padding: 18px 20px;
+  pointer-events: none;
+}
+
+@media (max-height: 700px) {
+  .glass--peel {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    width: min(280px, calc(100vw - 32px));
+    padding: 14px 16px;
+  }
+
+  .glass--peel .glass__body h2 {
+    font-size: 1.05rem;
+  }
+
+  .glass--peel .glass__body p {
+    font-size: 0.85rem;
+  }
+}
+
 /* ——— Controls ——— */
 .controls-section {
   max-width: 720px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 20px 160px;
 }
 
 .controls-section h2 {
@@ -435,7 +450,7 @@ code {
 .limits {
   max-width: 720px;
   margin: 0 auto;
-  padding: 24px 20px 40px;
+  padding: 24px 20px 140px;
 }
 
 .limits h2 {
