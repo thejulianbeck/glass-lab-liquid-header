@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Lab Safari-first: emulación web de Liquid Glass / frosted glass en un header sticky." />
+  <title>Liquid Glass Header Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- SVG filters for refraction / chromatic / noise (kept off-DOM visually) -->
+  <svg class="svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <filter id="glass-refraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+        <feOffset in="displaced" dx="0" dy="0" result="rChannel" />
+        <feOffset in="displaced" dx="0" dy="0" result="bChannel" />
+        <feColorMatrix in="rChannel" type="matrix"
+          values="1 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 1 0" result="red" />
+        <feColorMatrix in="displaced" type="matrix"
+          values="0 0 0 0 0
+                  0 1 0 0 0
+                  0 0 0 0 0
+                  0 0 0 1 0" result="green" />
+        <feColorMatrix in="bChannel" type="matrix"
+          values="0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 1 0 0
+                  0 0 0 1 0" result="blue" />
+        <feBlend in="red" in2="green" mode="screen" result="rg" />
+        <feBlend in="rg" in2="blue" mode="screen" />
+      </filter>
+      <filter id="glass-noise" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="grain" />
+        <feColorMatrix type="matrix"
+          values="0 0 0 0 0.55
+                  0 0 0 0 0.55
+                  0 0 0 0 0.55
+                  0 0 0 0.35 0" />
+      </filter>
+    </defs>
+  </svg>
+
+  <header class="glass-header" id="glassHeader" role="banner">
+    <div class="glass-header__noise" id="noiseLayer" aria-hidden="true"></div>
+    <div class="glass-header__specular" id="specularLayer" aria-hidden="true"></div>
+    <div class="glass-header__inner">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Liquid Glass Lab</span>
+      </div>
+      <nav class="nav" aria-label="Navegación demo">
+        <a href="#demo">Demo</a>
+        <a href="#controles">Controles</a>
+        <a href="#limites">Límites</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="demo">
+      <p class="eyebrow">Safari-first · lab público</p>
+      <h1>Emulación web de Liquid Glass</h1>
+      <p class="lede">
+        Header sticky con <code>backdrop-filter</code>, highlight especular y filtros SVG.
+        Desliza los controles y desplázate para ver el vidrio sobre fotos y degradados.
+      </p>
+    </section>
+
+    <!-- Scrollable demo panels with rich backgrounds -->
+    <section class="panel panel--photo-1" aria-label="Fondo foto 1">
+      <div class="panel__card">
+        <h2>Fondo fotográfico</h2>
+        <p>El blur y el tinte se aprecian al pasar el header sobre texturas ricas.</p>
+      </div>
+    </section>
+
+    <section class="panel panel--gradient-1" aria-label="Degradado 1">
+      <div class="panel__card">
+        <h2>Degradado vivo</h2>
+        <p>Saturación y brillo del glass se notan más sobre colores saturados.</p>
+      </div>
+    </section>
+
+    <section class="panel panel--photo-2" aria-label="Fondo foto 2">
+      <div class="panel__card">
+        <h2>Contraste alto</h2>
+        <p>Prueba el borde, las sombras y el especular mientras scrolleas.</p>
+      </div>
+    </section>
+
+    <section class="panel panel--gradient-2" aria-label="Degradado 2">
+      <div class="panel__card">
+        <h2>Frost vs líquido</h2>
+        <p>Usa los presets: frost (más blur/opacidad) o líquido (más saturate/specular).</p>
+      </div>
+    </section>
+
+    <section class="panel panel--photo-3" aria-label="Fondo foto 3">
+      <div class="panel__card">
+        <h2>Safe area</h2>
+        <p>En iPhone/iPad el header respeta <code>env(safe-area-inset-*)</code>.</p>
+      </div>
+    </section>
+
+    <section class="controls-section" id="controles">
+      <h2>Controles en vivo</h2>
+      <p class="controls-intro">Todos los valores actualizan variables CSS del header. Optimizado para Safari (iPhone, iPad, Mac).</p>
+
+      <div class="presets" role="group" aria-label="Presets de sensación">
+        <button type="button" class="preset" data-preset="apple" id="presetApple">Apple-ish</button>
+        <button type="button" class="preset" data-preset="frost">Frost</button>
+        <button type="button" class="preset" data-preset="liquid">Líquido</button>
+        <button type="button" class="preset" data-preset="clear">Claro</button>
+      </div>
+
+      <form class="controls" id="controlsForm" autocomplete="off">
+        <label class="ctrl">
+          <span class="ctrl__label">Opacidad / tinte <output id="out-opacity">0.55</output></span>
+          <input type="range" id="opacity" min="0.05" max="0.95" step="0.01" value="0.55" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Backdrop blur (px) <output id="out-blur">28</output></span>
+          <input type="range" id="blur" min="0" max="60" step="1" value="28" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Saturate <output id="out-saturate">1.6</output></span>
+          <input type="range" id="saturate" min="0.5" max="2.5" step="0.05" value="1.6" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Brightness <output id="out-brightness">1.08</output></span>
+          <input type="range" id="brightness" min="0.7" max="1.4" step="0.01" value="1.08" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Contrast <output id="out-contrast">1.05</output></span>
+          <input type="range" id="contrast" min="0.7" max="1.4" step="0.01" value="1.05" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Borde opacidad <output id="out-border-opacity">0.35</output></span>
+          <input type="range" id="border-opacity" min="0" max="1" step="0.01" value="0.35" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Borde ancho (px) <output id="out-border-width">0.5</output></span>
+          <input type="range" id="border-width" min="0" max="3" step="0.25" value="0.5" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Especular <output id="out-specular">0.45</output></span>
+          <input type="range" id="specular" min="0" max="1" step="0.01" value="0.45" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Refracción / distorsión <output id="out-refraction">4</output></span>
+          <input type="range" id="refraction" min="0" max="24" step="1" value="4" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Aberración cromática (px) <output id="out-chroma">0.6</output></span>
+          <input type="range" id="chroma" min="0" max="3" step="0.1" value="0.6" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Noise / grain <output id="out-noise">0.12</output></span>
+          <input type="range" id="noise" min="0" max="0.45" step="0.01" value="0.12" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Radio de esquina (px) <output id="out-radius">18</output></span>
+          <input type="range" id="radius" min="0" max="40" step="1" value="18" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Sombra interna <output id="out-inner-shadow">0.25</output></span>
+          <input type="range" id="inner-shadow" min="0" max="1" step="0.01" value="0.25" />
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__label">Sombra externa <output id="out-outer-shadow">0.18</output></span>
+          <input type="range" id="outer-shadow" min="0" max="1" step="0.01" value="0.18" />
+        </label>
+      </form>
+    </section>
+
+    <section class="limits" id="limites">
+      <h2>Límites honestos</h2>
+      <p>
+        Esto emula Liquid Glass en la web con <strong>backdrop-filter</strong> (+ <code>-webkit-backdrop-filter</code>)
+        y filtros SVG (ruido / desplazamiento / canales RGB). <strong>No es</strong> el material de sistema
+        Liquid Glass de iOS 26 / visionOS: no hay lente real del compositor OS, ni el mismo muestreo
+        de capas detrás de la barra de estado.
+      </p>
+      <ul>
+        <li>Safari iOS/iPadOS soporta backdrop-filter; el rendimiento baja si el blur es muy alto o hay muchos filtros SVG activos.</li>
+        <li>La “refracción” aquí es feDisplacementMap + offsets RGB; no es óptica física.</li>
+        <li>Si un filtro falla, el header sigue siendo usable (tinte + borde + sombra).</li>
+      </ul>
+    </section>
+
+    <footer class="site-footer">
+      <p>Lab de Julián · <a href="https://github.com/thejulianbeck/glass-lab-liquid-header">repo</a></p>
+    </footer>
+  </main>
+
+  <script src="lab.js" defer></script>
+</body>
+</html>
