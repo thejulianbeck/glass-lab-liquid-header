@@ -376,6 +376,46 @@ code {
   }
 }
 
+
+/* ——— Scroll test zone: crisp B/W mono for peel sampling ——— */
+.scroll-test {
+  background: #fff;
+  color: #000;
+  min-height: 50vh;
+  padding: 48px max(20px, env(safe-area-inset-right, 0px)) 64px
+    max(20px, env(safe-area-inset-left, 0px));
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  /* Force light B/W even under prefers-color-scheme: dark */
+  color-scheme: only light;
+}
+
+.scroll-test__label {
+  margin: 0 0 28px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #000;
+  opacity: 0.55;
+}
+
+.scroll-test__body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.scroll-test__body p {
+  margin: 0 0 1.15em;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #000;
+}
+
+.scroll-test__body p:last-child {
+  margin-bottom: 0;
+}
+
 /* ——— Controls ——— */
 .controls-section {
   max-width: 720px;

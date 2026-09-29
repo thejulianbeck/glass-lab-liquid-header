@@ -28,7 +28,7 @@
         <strong>material</strong>, no una barra de UI. Tres vehículos mínimos
         (pill, card, panel) lo muestran sobre fondos ricos. La
         <strong>cáscara fija</strong> abajo al centro permanece en el viewport:
-        scrollea y mira cómo reacciona sobre cada fondo. Ajusta los sliders.
+        scrollea y mira cómo reacciona sobre cada fondo (incluye una <a href="#zona-prueba">zona blanco/mono</a>). Ajusta los sliders.
       </p>
     </section>
 
@@ -100,6 +100,34 @@
             <p>En iPhone / iPad el lab respeta <code>env(safe-area-inset-*)</code>.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+
+    <!-- Zona de prueba: fondo blanco + texto mono para juzgar la cáscara fija -->
+    <section class="scroll-test" id="zona-prueba" aria-label="Zona de prueba blanco mono">
+      <p class="scroll-test__label">Zona de prueba · blanco / mono</p>
+      <div class="scroll-test__body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</p>
+        <p>La cáscara fija muestreá este fondo blanco y el texto negro mono al scrollear.</p>
+        <p>blur · saturate · brightness · contrast · borde · especular · noise</p>
+        <p>Safari-first · iPhone · iPad · Mac · Liquid Glass material lab</p>
+        <p>Líneas de relleno para que el peel recorra un tramo largo de tipografía nítida.</p>
+        <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 !@#$%^&amp;*()[]{}</p>
+        <p>¡Qué contraste! Blanco puro detrás, mono negro delante — ideal para ver el frost.</p>
+        <p>Scrollea despacio: el material debería muestrear y reaccionar sobre cada línea.</p>
+        <p>The quick brown fox jumps over the lazy dog — 0123456789.</p>
+        <p>Pack my box with five dozen liquor jugs. Sphinx of black quartz.</p>
+        <p>Controles abajo siguen vivos; esta zona no toca sliders ni la cáscara fija.</p>
+        <p>======= ======= ======= ======= ======= ======= ======= =======</p>
+        <p>Más texto de muestra · tipografía ui-monospace / SF Mono / Menlo.</p>
+        <p>Viewport mitad · sección sustancial · fondo #fff · color #000.</p>
+        <p>Julián · lab público · material Liquid Glass emulado en la web.</p>
+        <p>fin de zona · seguí scrolleando a Controles en vivo</p>
       </div>
     </section>
 
