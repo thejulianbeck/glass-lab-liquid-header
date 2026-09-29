@@ -40,17 +40,33 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
     system-ui, sans-serif;
   color: var(--text);
   background: var(--page-bg);
   line-height: 1.5;
   min-height: 100dvh;
-  overflow-x: hidden; /* prevent 100vw / img overflow on iPhone */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 
@@ -141,10 +157,17 @@ code {
 .stage {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 .stage__bg {
   min-height: 55vh;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
@@ -195,6 +218,11 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0
     max(16px, env(safe-area-inset-left, 0px));
   position: relative;
@@ -336,11 +364,18 @@ code {
 .glass--peel {
   position: fixed;
   z-index: 40;
-  left: 50%;
+  /* left+right+margin auto: centers without left:50%+width expanding
+     the pre-transform box past the viewport (iOS Safari shrink-to-fit). */
+  left: 1rem;
+  right: 1rem;
   bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  width: min(320px, calc(100vw - 32px));
+  width: min(340px, calc(100% - 2rem));
+  max-width: calc(100% - 2rem);
+  margin-left: auto;
+  margin-right: auto;
+  transform: none;
   pointer-events: none;
+  box-sizing: border-box;
   /* Explicitly clear anything that could confuse the fixed containing block */
   filter: none;
   perspective: none;
@@ -361,7 +396,8 @@ code {
 @media (max-height: 700px) {
   .glass--peel {
     bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
-    width: min(280px, calc(100vw - 32px));
+    width: min(280px, calc(100% - 2rem));
+    max-width: calc(100% - 2rem);
   }
 
   .glass--peel .glass {
@@ -408,6 +444,7 @@ code {
   width: 100%;
   max-width: 100%;
   height: auto;
+  min-height: 0;
   box-sizing: border-box;
   object-fit: cover;
   object-position: center top;
@@ -440,7 +477,9 @@ code {
 
 /* ——— Controls ——— */
 .controls-section {
-  max-width: 720px;
+  max-width: min(720px, 100%);
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 40px 20px 160px;
 }
@@ -530,7 +569,9 @@ code {
 
 /* ——— Limits ——— */
 .limits {
-  max-width: 720px;
+  max-width: min(720px, 100%);
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 24px 20px 140px;
 }
