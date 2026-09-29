@@ -122,7 +122,7 @@
       dark: { rgb: [245, 245, 247], mutedAlpha: 0.78 },
       light: { rgb: [11, 11, 15], mutedAlpha: 0.72 },
     };
-    const PEEL_COLOR_DURATION = 560;
+    const PEEL_COLOR_DURATION = 400;
 
     function setPeelColors(luma) {
       const dark = PEEL_COLORS.light;
