@@ -110,6 +110,67 @@
   if (peel) {
     let raf = 0;
     let last = "";
+    let colorRaf = 0;
+    let colorAnimationStart = 0;
+    let colorAnimationFrom = 0;
+    let currentLuma = 0;
+    let targetLuma = 0;
+
+    // Keep the endpoints familiar, but render every intermediate value so the
+    // text passes smoothly through gray instead of relying on a CSS color swap.
+    const PEEL_COLORS = {
+      dark: { rgb: [245, 245, 247], mutedAlpha: 0.78 },
+      light: { rgb: [11, 11, 15], mutedAlpha: 0.72 },
+    };
+    const PEEL_COLOR_DURATION = 560;
+
+    function setPeelColors(luma) {
+      const dark = PEEL_COLORS.light;
+      const light = PEEL_COLORS.dark;
+      const rgb = dark.rgb.map((value, index) =>
+        Math.round(value + (light.rgb[index] - value) * luma),
+      );
+      const mutedAlpha =
+        dark.mutedAlpha + (light.mutedAlpha - dark.mutedAlpha) * luma;
+      peel.style.setProperty("--peel-fg", `rgb(${rgb.join(", ")})`);
+      peel.style.setProperty(
+        "--peel-muted",
+        `rgba(${rgb.join(", ")}, ${mutedAlpha.toFixed(3)})`,
+      );
+    }
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function animatePeelColors(timestamp) {
+      if (!colorAnimationStart) colorAnimationStart = timestamp;
+      const progress = Math.min(
+        1,
+        (timestamp - colorAnimationStart) / PEEL_COLOR_DURATION,
+      );
+      currentLuma =
+        colorAnimationFrom +
+        (targetLuma - colorAnimationFrom) * easeInOut(progress);
+      setPeelColors(currentLuma);
+
+      if (progress < 1) {
+        colorRaf = requestAnimationFrame(animatePeelColors);
+      } else {
+        currentLuma = targetLuma;
+        colorRaf = 0;
+        colorAnimationStart = 0;
+      }
+    }
+
+    function transitionPeelColors(mode) {
+      const nextTarget = mode === "dark" ? 1 : 0;
+      if (nextTarget === targetLuma && !colorRaf) return;
+      targetLuma = nextTarget;
+      colorAnimationFrom = currentLuma;
+      colorAnimationStart = 0;
+      if (!colorRaf) colorRaf = requestAnimationFrame(animatePeelColors);
+    }
 
     function markers() {
       return document.querySelectorAll("[data-peel-luma]");
@@ -158,7 +219,7 @@
       last = mode;
       peel.classList.toggle("is-over-dark", mode === "dark");
       peel.classList.toggle("is-over-light", mode === "light");
-      peel.style.setProperty("--peel-fg", mode === "dark" ? "#f5f5f7" : "#0b0b0f");
+      transitionPeelColors(mode);
     }
 
     function tick() {

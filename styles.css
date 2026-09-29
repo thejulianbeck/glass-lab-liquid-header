@@ -393,19 +393,9 @@ code {
   pointer-events: none;
 }
 
-/* Adaptive peel text: black over light, white over dark */
+/* Adaptive peel text: JS updates these colors through the full luminance range. */
 .glass--peel {
-  --peel-fg: #0b0b0f;
-  --peel-muted: rgba(11, 11, 15, 0.72);
-}
-
-.glass--peel.is-over-dark {
-  --peel-fg: #f5f5f7;
-  --peel-muted: rgba(245, 245, 247, 0.78);
-}
-
-.glass--peel.is-over-light {
-  --peel-fg: #0b0b0f;
+  --peel-fg: rgb(11, 11, 15);
   --peel-muted: rgba(11, 11, 15, 0.72);
 }
 
@@ -414,7 +404,8 @@ code {
 .glass--peel .glass__body h2,
 .glass--peel .glass__body p {
   color: var(--peel-fg);
-  transition: color 420ms ease-in-out;
+  /* Color changes are interpolated frame-by-frame in lab.js. */
+  transition: none;
 }
 
 .glass--peel .glass__body p {
