@@ -50,6 +50,7 @@ body {
   background: var(--page-bg);
   line-height: 1.5;
   min-height: 100dvh;
+  overflow-x: hidden; /* prevent 100vw / img overflow on iPhone */
 }
 
 
@@ -381,10 +382,12 @@ code {
 .scroll-test {
   background: #f5f0e8;
   color: #000;
-  /* No lateral padding — photo must be edge-to-edge (100vw) */
+  /* No lateral padding — photo edge-to-edge within layout width (not 100vw) */
   padding: 0;
   margin: 0;
   overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   color-scheme: only light;
@@ -393,22 +396,19 @@ code {
 .scroll-test__photo {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  max-width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100%;
+  max-width: 100%;
   line-height: 0;
   background: #1a0a08;
+  box-sizing: border-box;
 }
 
 .scroll-test__photo img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
-  min-height: 110vh;
+  box-sizing: border-box;
   object-fit: cover;
   object-position: center top;
 }
