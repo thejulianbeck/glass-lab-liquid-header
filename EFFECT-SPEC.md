@@ -3,7 +3,7 @@
 ## Surface
 - **Material Liquid Glass** (cristal / frosted glass), applicable to multiple shapes.
 - Demo vehicles only (not the product): **pill**, **card**, **panel** — all share the same `.glass` CSS variables.
-- **Fixed viewport peel** (`.glass--peel`): `position: fixed` bottom-center card so scrolling reveals the material over changing stage backgrounds.
+- **Fixed viewport peel** (`.glass--peel` host as a **direct `body` child** + inner `.glass`): host is `position: fixed` bottom-center with no backdrop-filter/will-change; material styles live on the child so Safari cannot trap fixed positioning.
 - Not a sticky-header product; chrome topbar is minimal and separate from the subject material.
 
 ## Targets
@@ -39,7 +39,7 @@
 3. **Specular overlay** — gradient + `mix-blend-mode: soft-light`, opacity `--glass-specular`.
 4. **Noise layer** — SVG-noise data-URI; opacity `--glass-noise` (static overlay, no live turbulence).
 5. **Border + inner/outer shadow** — fine edge and depth via `--glass-border-*` and `--glass-*-shadow`.
-6. **Fixed peel** — `.glass--peel` stays in the viewport (`position: fixed`, bottom-center) so the same material samples scrolling backgrounds; z-index below controls, does not cover sliders.
+6. **Fixed peel** — `.glass--peel` host is a direct `body` child (`position: fixed`, bottom-center, `transform: translateX(-50%)` only). Inner `.glass` carries backdrop-filter / tint / specular. Do not put `.glass` transform/will-change/backdrop-filter on the fixed host itself (Safari traps fixed). z-index below/beside controls.
 7. **Shape variants** (`.glass--pill` / `--card` / `--panel` / `--peel`) change size/placement only; material tokens stay shared.
 8. **`env(safe-area-inset-*)`**, `translateZ(0)`, no `background-attachment: fixed` on stage photos.
 

@@ -19,16 +19,6 @@
   </header>
 
 
-  <!-- Fixed viewport peel: stays on screen while stage backgrounds scroll underneath -->
-  <aside class="glass glass--card glass--peel" data-glass aria-label="Cáscara fija de Liquid Glass">
-    <span class="glass__noise" aria-hidden="true"></span>
-    <span class="glass__specular" aria-hidden="true"></span>
-    <div class="glass__body">
-      <h2>Cáscara fija</h2>
-      <p>Scrollea: el material muestrea los fondos que pasan detrás.</p>
-    </div>
-  </aside>
-
   <main>
     <section class="intro">
       <p class="eyebrow">Safari-first · lab público</p>
@@ -198,6 +188,18 @@
       <p>Lab de Julián · <a href="https://github.com/thejulianbeck/glass-lab-liquid-header">repo</a></p>
     </footer>
   </main>
+
+  <!-- Fixed viewport peel host: direct body child; material lives on inner .glass (Safari-safe) -->
+  <aside class="glass--peel" aria-label="Cáscara fija de Liquid Glass">
+    <div class="glass glass--card" data-glass>
+      <span class="glass__noise" aria-hidden="true"></span>
+      <span class="glass__specular" aria-hidden="true"></span>
+      <div class="glass__body">
+        <h2>Cáscara fija</h2>
+        <p>Scrollea: el material muestrea los fondos que pasan detrás.</p>
+      </div>
+    </div>
+  </aside>
 
   <script src="lab.js" defer></script>
 </body>
