@@ -3,7 +3,6 @@
 
   const root = document.documentElement;
   const form = document.getElementById("controlsForm");
-  if (!form) return;
 
   const map = {
     opacity: { css: "--glass-opacity", unit: "", decimals: 2 },
@@ -34,19 +33,22 @@
     if (out) out.textContent = fmt(num, meta.decimals);
   }
 
-  form.addEventListener("input", (e) => {
-    const t = e.target;
-    if (!(t instanceof HTMLInputElement) || t.type !== "range") return;
-    applyControl(t.id, t.value);
-    clearPresetActive();
-  });
+  if (form) {
+    form.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!(t instanceof HTMLInputElement) || t.type !== "range") return;
+      applyControl(t.id, t.value);
+      clearPresetActive();
+    });
+  }
 
+  /* Locked defaults from Julián's screenshots (= Lock / apple preset) */
   const presets = {
     apple: {
-      opacity: 0.55, blur: 28, saturate: 1.6, brightness: 1.08, contrast: 1.05,
-      "border-opacity": 0.35, "border-width": 0.5, specular: 0.45,
-      noise: 0.12, radius: 22,
-      "inner-shadow": 0.25, "outer-shadow": 0.18,
+      opacity: 0.15, blur: 10, saturate: 1.15, brightness: 1.1, contrast: 1.05,
+      "border-opacity": 0.35, "border-width": 0.25, specular: 0,
+      noise: 0.12, radius: 20,
+      "inner-shadow": 0.2, "outer-shadow": 0,
     },
     frost: {
       opacity: 0.72, blur: 40, saturate: 1.15, brightness: 1.02, contrast: 1.02,
@@ -90,9 +92,93 @@
     btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
   });
 
-  Object.keys(map).forEach((id) => {
-    const input = document.getElementById(id);
-    if (input) applyControl(id, input.value);
-  });
-  document.getElementById("presetApple")?.classList.add("is-active");
+  if (form) {
+    Object.keys(map).forEach((id) => {
+      const input = document.getElementById(id);
+      if (input) applyControl(id, input.value);
+    });
+    document.getElementById("presetApple")?.classList.add("is-active");
+  }
+
+  /* ——— Adaptive peel text (Safari iOS-safe) ———
+     Sections declare data-peel-luma="light"|"dark".
+     On scroll/resize we sample which marker sits under the peel center
+     (getBoundingClientRect + rAF throttle). Cream + zona-prueba photo
+     are marked light → black text; dark bands/photos → white text.
+     No live canvas/CORS; readable over cleverness. */
+  const peel = document.getElementById("glassPeel");
+  if (peel) {
+    let raf = 0;
+    let last = "";
+
+    function markers() {
+      return document.querySelectorAll("[data-peel-luma]");
+    }
+
+    function sampleLuma() {
+      const pr = peel.getBoundingClientRect();
+      if (!pr.width || !pr.height) return "light";
+      // Sample a few points under the peel (center + upper/lower thirds)
+      const xs = [pr.left + pr.width * 0.5];
+      const ys = [
+        pr.top + pr.height * 0.35,
+        pr.top + pr.height * 0.5,
+        pr.top + pr.height * 0.65,
+      ];
+      const votes = { light: 0, dark: 0 };
+
+      const list = markers();
+      for (const y of ys) {
+        for (const x of xs) {
+          // Prefer the topmost (last in DOM among intersecting) marker
+          let hit = null;
+          for (let i = 0; i < list.length; i++) {
+            const el = list[i];
+            const r = el.getBoundingClientRect();
+            if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+              hit = el;
+            }
+          }
+          if (hit) {
+            const v = hit.getAttribute("data-peel-luma");
+            if (v === "dark" || v === "light") votes[v]++;
+          }
+        }
+      }
+
+      if (votes.dark === 0 && votes.light === 0) {
+        // Fallback: page background is light in this lab
+        return "light";
+      }
+      return votes.dark > votes.light ? "dark" : "light";
+    }
+
+    function applyLuma(mode) {
+      if (mode === last) return;
+      last = mode;
+      peel.classList.toggle("is-over-dark", mode === "dark");
+      peel.classList.toggle("is-over-light", mode === "light");
+      peel.style.setProperty("--peel-fg", mode === "dark" ? "#f5f5f7" : "#0b0b0f");
+    }
+
+    function tick() {
+      raf = 0;
+      applyLuma(sampleLuma());
+    }
+
+    function schedule() {
+      if (raf) return;
+      raf = requestAnimationFrame(tick);
+    }
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", schedule, { passive: true });
+      window.visualViewport.addEventListener("scroll", schedule, { passive: true });
+    }
+    // Initial + after images layout
+    schedule();
+    window.addEventListener("load", schedule, { once: true });
+  }
 })();

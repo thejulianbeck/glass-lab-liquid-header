@@ -1,19 +1,19 @@
 /* Liquid Glass material lab — Safari-first */
 
 :root {
-  /* Material defaults — tuned toward Apple Liquid Glass */
-  --glass-opacity: 0.55;
-  --glass-blur: 28px;
-  --glass-saturate: 1.6;
-  --glass-brightness: 1.08;
+  /* Material defaults — locked from Julián's screenshots */
+  --glass-opacity: 0.15;
+  --glass-blur: 10px;
+  --glass-saturate: 1.15;
+  --glass-brightness: 1.10;
   --glass-contrast: 1.05;
   --glass-border-opacity: 0.35;
-  --glass-border-width: 0.5px;
-  --glass-specular: 0.45;
+  --glass-border-width: 0.25px;
+  --glass-specular: 0;
   --glass-noise: 0.12;
-  --glass-radius: 22px;
-  --glass-inner-shadow: 0.25;
-  --glass-outer-shadow: 0.18;
+  --glass-radius: 20px;
+  --glass-inner-shadow: 0.20;
+  --glass-outer-shadow: 0;
 
   --tint: 255, 255, 255;
   --text: #0b0b0f;
@@ -393,6 +393,38 @@ code {
   pointer-events: none;
 }
 
+/* Adaptive peel text: black over light, white over dark */
+.glass--peel {
+  --peel-fg: #0b0b0f;
+  --peel-muted: rgba(11, 11, 15, 0.72);
+}
+
+.glass--peel.is-over-dark {
+  --peel-fg: #f5f5f7;
+  --peel-muted: rgba(245, 245, 247, 0.78);
+}
+
+.glass--peel.is-over-light {
+  --peel-fg: #0b0b0f;
+  --peel-muted: rgba(11, 11, 15, 0.72);
+}
+
+.glass--peel .glass {
+  color: var(--peel-fg);
+  transition: color 0.18s ease;
+}
+
+.glass--peel .glass__body h2,
+.glass--peel .glass__body p,
+.glass--peel .glass__body {
+  color: var(--peel-fg);
+}
+
+.glass--peel .glass__body p {
+  color: var(--peel-muted);
+}
+
+
 @media (max-height: 700px) {
   .glass--peel {
     bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
@@ -474,6 +506,25 @@ code {
   line-height: 1.55;
   color: #000;
 }
+
+.scroll-test__darkband {
+  padding: 48px max(20px, env(safe-area-inset-right, 0px)) 72px
+    max(20px, env(safe-area-inset-left, 0px));
+  background: #0b0b0f;
+  color: #f5f5f7;
+  min-height: 42vh;
+  box-sizing: border-box;
+}
+
+.scroll-test__darkband .scroll-test__label,
+.scroll-test__darkband .scroll-test__hint {
+  color: #f5f5f7;
+}
+
+.scroll-test__darkband .scroll-test__label {
+  opacity: 0.55;
+}
+
 
 /* ——— Controls ——— */
 .controls-section {

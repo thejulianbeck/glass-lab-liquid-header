@@ -14,21 +14,21 @@
 
 | Variable | CSS custom property | Default | Range (UI) | Unit |
 |---|---|---|---|---|
-| Opacity / tint | `--glass-opacity` | `0.55` | 0.05–0.95 | — |
-| Backdrop blur | `--glass-blur` | `28` | 0–60 | px |
-| Saturate | `--glass-saturate` | `1.6` | 0.5–2.5 | — |
-| Brightness | `--glass-brightness` | `1.08` | 0.7–1.4 | — |
+| Opacity / tint | `--glass-opacity` | `0.15` | 0.05–0.95 | — |
+| Backdrop blur | `--glass-blur` | `10` | 0–60 | px |
+| Saturate | `--glass-saturate` | `1.15` | 0.5–2.5 | — |
+| Brightness | `--glass-brightness` | `1.10` | 0.7–1.4 | — |
 | Contrast | `--glass-contrast` | `1.05` | 0.7–1.4 | — |
 | Border opacity | `--glass-border-opacity` | `0.35` | 0–1 | — |
-| Border width | `--glass-border-width` | `0.5` | 0–3 | px |
-| Specular highlight | `--glass-specular` | `0.45` | 0–1 | — |
+| Border width | `--glass-border-width` | `0.25` | 0–3 | px |
+| Specular highlight | `--glass-specular` | `0` | 0–1 | — |
 | Noise / grain | `--glass-noise` | `0.12` | 0–0.45 | — |
-| Corner radius | `--glass-radius` | `22` | 0–40 | px |
-| Inner shadow | `--glass-inner-shadow` | `0.25` | 0–1 | — |
-| Outer shadow | `--glass-outer-shadow` | `0.18` | 0–1 | — |
+| Corner radius | `--glass-radius` | `20` | 0–40 | px |
+| Inner shadow | `--glass-inner-shadow` | `0.20` | 0–1 | — |
+| Outer shadow | `--glass-outer-shadow` | `0` | 0–1 | — |
 
 ### Presets
-- **Apple-ish:** defaults above (bright, soft blur ~28px, light tint, subtle border, gentle specular).
+- **Lock:** locked defaults above (Julián screenshots: opacity 0.15, blur 10px, saturate 1.15, brightness 1.10, contrast 1.05, border 0.25px @ 0.35, specular 0, noise 0.12, radius 20, inner 0.20, outer 0).
 - **Frost:** higher opacity + blur, lower saturate/specular, more grain.
 - **Líquido:** lower opacity, higher saturate/specular, clearer liquid feel.
 - **Claro:** thinner, clearer glass.
@@ -39,7 +39,8 @@
 3. **Specular overlay** — gradient + `mix-blend-mode: soft-light`, opacity `--glass-specular`.
 4. **Noise layer** — SVG-noise data-URI; opacity `--glass-noise` (static overlay, no live turbulence).
 5. **Border + inner/outer shadow** — fine edge and depth via `--glass-border-*` and `--glass-*-shadow`.
-6. **Fixed peel** — `.glass--peel` host is a direct `body` child (`position: fixed`, bottom-center, `transform: translateX(-50%)` only). Inner `.glass` carries backdrop-filter / tint / specular. Do not put `.glass` transform/will-change/backdrop-filter on the fixed host itself (Safari traps fixed). z-index below/beside controls.
+6. **Fixed peel** — `.glass--peel` host is a direct `body` child (`position: fixed`, bottom-center via left/right + margin auto). Inner `.glass` carries backdrop-filter / tint / specular. Do not put `.glass` transform/will-change/backdrop-filter on the fixed host itself (Safari traps fixed). z-index below/beside controls.
+9. **Adaptive peel text** — markers `data-peel-luma="light|dark"` on sections; on scroll/resize (rAF) sample points under the peel rect and toggle `.is-over-light` / `.is-over-dark` (black vs white). Cream + `#zona-prueba` photo count as light; darkband/stage photos as dark. No canvas/CORS.
 7. **Shape variants** (`.glass--pill` / `--card` / `--panel` / `--peel`) change size/placement only; material tokens stay shared.
 8. **`env(safe-area-inset-*)`**, `translateZ(0)`, no `background-attachment: fixed` on stage photos.
 
@@ -55,7 +56,8 @@
 - [x] Material is the protagonist; pill / card / panel are demo vehicles only.
 - [x] Fixed viewport peel lets you scroll and see the material over changing backgrounds.
 - [x] Live sliders for all listed variables → CSS custom properties on `.glass`.
-- [x] Defaults tuned Apple-ish Liquid Glass.
+- [x] Defaults locked from Julián screenshots (Lock preset).
+- [x] Adaptive peel text: black over light/cream/photo, white over dark (section `data-peel-luma` + rAF sample under peel).
 - [x] Spanish (LatAm neutral, tú) UI labels.
 - [x] Honest limits note in page UI.
 - [x] Safari-first prefixes + safe-area + graceful degrade.
