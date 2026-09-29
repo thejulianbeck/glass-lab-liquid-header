@@ -1,8 +1,9 @@
-# EFFECT-SPEC — Liquid Glass Sticky Header Lab
+# EFFECT-SPEC — Liquid Glass Material Lab
 
 ## Surface
-- **Sticky top header bar** (not a full-page hub).
-- Floats with side inset + safe-area padding; scrolls content underneath so glass is visible.
+- **Material Liquid Glass** (cristal / frosted / refraction), applicable to multiple shapes.
+- Demo vehicles only (not the product): **pill**, **card**, **panel** — all share the same `.glass` CSS variables.
+- Not a sticky-header product; chrome topbar is minimal and separate from the subject material.
 
 ## Targets
 - **Primary:** iPhone Safari, iPad Safari, Mac Safari
@@ -23,7 +24,7 @@
 | Refraction / lens | `--glass-refraction` | `4` | 0–24 | (feDisplacementMap scale) |
 | Chromatic aberration | `--glass-chroma` | `0.6` | 0–3 | px (RGB channel offset) |
 | Noise / grain | `--glass-noise` | `0.12` | 0–0.45 | — |
-| Corner radius | `--glass-radius` | `18` | 0–40 | px |
+| Corner radius | `--glass-radius` | `22` | 0–40 | px |
 | Inner shadow | `--glass-inner-shadow` | `0.25` | 0–1 | — |
 | Outer shadow | `--glass-outer-shadow` | `0.18` | 0–1 | — |
 
@@ -34,26 +35,24 @@
 - **Claro:** thinner, clearer glass.
 
 ## Technique and why
-1. **`backdrop-filter` + `-webkit-backdrop-filter`**  
-   Blur + saturate + brightness + contrast over live page content. Closest web analogue to frosted / liquid glass; Safari requires the `-webkit-` prefix.
-2. **Semi-transparent fill** via `rgba(var(--tint), var(--glass-opacity))` for light/dark tint.
-3. **Specular overlay** — absolute gradient layer with `mix-blend-mode: soft-light`, opacity driven by `--glass-specular`.
-4. **Noise layer** — SVG-noise data-URI tiled; opacity via `--glass-noise` (avoids heavy live `feTurbulence` on the whole header every frame).
-5. **SVG filter `#glass-refraction`** — `feTurbulence` + `feDisplacementMap` for lens-ish warp; dual `feOffset` + channel matrices for mild chromatic split. Applied only when refraction or chroma &gt; 0 (`glass-header--refract` class) to limit scroll cost.
-6. **`env(safe-area-inset-*)`** on header margin/padding for notched devices.
-7. **`isolation: isolate`**, `translateZ(0)`, avoid `background-attachment: fixed` on panels (iOS scroll jank).
+1. **`backdrop-filter` + `-webkit-backdrop-filter`** on `.glass` — blur + saturate + brightness + contrast. Closest web analogue to frosted / liquid glass; Safari needs `-webkit-`.
+2. **Semi-transparent fill** `rgba(var(--tint), var(--glass-opacity))` for light/dark tint.
+3. **Specular overlay** — gradient + `mix-blend-mode: soft-light`, opacity `--glass-specular`.
+4. **Noise layer** — SVG-noise data-URI; opacity `--glass-noise` (avoids heavy live turbulence every frame).
+5. **SVG filter `#glass-refraction`** — `feTurbulence` + `feDisplacementMap` + RGB `feOffset` split. Class `glass--refract` only when refraction/chroma &gt; 0.
+6. **Shape variants** (`.glass--pill` / `--card` / `--panel`) change size/radius only; material tokens stay shared.
+7. **`env(safe-area-inset-*)`**, `translateZ(0)`, no `background-attachment: fixed` on stage photos.
 
 ## What NOT to do
+- Do not frame the lab as a sticky-header product or redesign Ignara Universe.
 - Do not claim OS-level Liquid Glass / iOS 26 / visionOS material parity.
-- Do not use huge live SVG turbulence on scroll without gating.
-- Do not use `background-attachment: fixed` for demo photos on iOS.
+- Do not run ungated heavy SVG turbulence on every glass instance while scrolling.
 - Do not omit `-webkit-backdrop-filter`.
-- Do not leave the page unusable if SVG `filter: url(#…)` fails — tint/border/shadow remain.
-- Do not overwrite unrelated repos (e.g. Ignara Universe).
+- Do not leave the page broken if `filter: url(#…)` fails — tint/border/shadow remain.
 
 ## Acceptance criteria
-- [x] Sticky header over rich scrollable photo/gradient content.
-- [x] Live sliders for all listed variables, wired to CSS custom properties.
+- [x] Material is the protagonist; pill / card / panel are demo vehicles only.
+- [x] Live sliders for all listed variables → CSS custom properties on `.glass`.
 - [x] Defaults tuned Apple-ish Liquid Glass.
 - [x] Spanish (LatAm neutral, tú) UI labels.
 - [x] Honest limits note in page UI.
@@ -64,10 +63,10 @@
 ## Honest web vs Apple system limits
 | Web lab | Apple system Liquid Glass |
 |---|---|
-| Samples content *behind the element* via compositor backdrop-filter | OS material samples true layer tree / wallpaper / UI behind chrome |
-| Approximate “lens” with SVG displacement + RGB offsets | Physical-ish refraction / specular from system renderer |
+| Samples content behind the element via backdrop-filter | OS material samples true layer tree / wallpaper / chrome |
+| Approximate “lens” with SVG displacement + RGB offsets | System refraction / specular path |
 | Grain is a static overlay | Material micro-structure from OS |
-| No integration with status bar / home indicator materials | First-class system chrome |
-| Perf sensitive to blur radius + SVG filter | Hardware-optimized system path |
+| Shape-agnostic CSS tokens | First-class system material API |
+| Perf sensitive to blur + SVG filter | Hardware-optimized system path |
 
-**Bottom line:** convincing *visual* emulation for demos and tuning; not a drop-in replacement for Apple’s system material.
+**Bottom line:** convincing *visual* material emulation for demos and tuning; not a drop-in for Apple’s system material.

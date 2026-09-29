@@ -4,12 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
-  <meta name="description" content="Lab Safari-first: emulación web de Liquid Glass / frosted glass en un header sticky." />
-  <title>Liquid Glass Header Lab</title>
+  <meta name="description" content="Lab Safari-first: material Liquid Glass / frosted glass en la web — card, pill y panel." />
+  <title>Liquid Glass Material Lab</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- SVG filters for refraction / chromatic / noise (kept off-DOM visually) -->
   <svg class="svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
     <defs>
       <filter id="glass-refraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
@@ -18,99 +17,113 @@
         <feOffset in="displaced" dx="0" dy="0" result="rChannel" />
         <feOffset in="displaced" dx="0" dy="0" result="bChannel" />
         <feColorMatrix in="rChannel" type="matrix"
-          values="1 0 0 0 0
-                  0 0 0 0 0
-                  0 0 0 0 0
-                  0 0 0 1 0" result="red" />
+          values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
         <feColorMatrix in="displaced" type="matrix"
-          values="0 0 0 0 0
-                  0 1 0 0 0
-                  0 0 0 0 0
-                  0 0 0 1 0" result="green" />
+          values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
         <feColorMatrix in="bChannel" type="matrix"
-          values="0 0 0 0 0
-                  0 0 0 0 0
-                  0 0 1 0 0
-                  0 0 0 1 0" result="blue" />
+          values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
         <feBlend in="red" in2="green" mode="screen" result="rg" />
         <feBlend in="rg" in2="blue" mode="screen" />
-      </filter>
-      <filter id="glass-noise" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="grain" />
-        <feColorMatrix type="matrix"
-          values="0 0 0 0 0.55
-                  0 0 0 0 0.55
-                  0 0 0 0 0.55
-                  0 0 0 0.35 0" />
       </filter>
     </defs>
   </svg>
 
-  <header class="glass-header" id="glassHeader" role="banner">
-    <div class="glass-header__noise" id="noiseLayer" aria-hidden="true"></div>
-    <div class="glass-header__specular" id="specularLayer" aria-hidden="true"></div>
-    <div class="glass-header__inner">
-      <div class="brand">
-        <span class="brand__mark" aria-hidden="true"></span>
-        <span class="brand__text">Liquid Glass Lab</span>
-      </div>
-      <nav class="nav" aria-label="Navegación demo">
-        <a href="#demo">Demo</a>
-        <a href="#controles">Controles</a>
-        <a href="#limites">Límites</a>
-      </nav>
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <span class="topbar__mark" aria-hidden="true"></span>
+      <span class="topbar__title">Liquid Glass · Material Lab</span>
+      <a class="topbar__link" href="#controles">Controles</a>
     </div>
   </header>
 
   <main>
-    <section class="hero" id="demo">
+    <section class="intro">
       <p class="eyebrow">Safari-first · lab público</p>
-      <h1>Emulación web de Liquid Glass</h1>
+      <h1>Material Liquid Glass</h1>
       <p class="lede">
-        Header sticky con <code>backdrop-filter</code>, highlight especular y filtros SVG.
-        Desliza los controles y desplázate para ver el vidrio sobre fotos y degradados.
+        Emulación web del cristal / frosted / refraction. El protagonista es el
+        <strong>material</strong>, no una barra de UI. Tres vehículos mínimos
+        (pill, card, panel) lo muestran sobre fondos ricos. Ajusta los sliders.
       </p>
     </section>
 
-    <!-- Scrollable demo panels with rich backgrounds -->
-    <section class="panel panel--photo-1" aria-label="Fondo foto 1">
-      <div class="panel__card">
-        <h2>Fondo fotográfico</h2>
-        <p>El blur y el tinte se aprecian al pasar el header sobre texturas ricas.</p>
+    <!-- Stage: scrollable rich backgrounds with glass vehicles floating on top -->
+    <section class="stage" id="demo" aria-label="Escenario del material">
+      <div class="stage__bg stage__bg--photo-1"></div>
+      <div class="stage__layer">
+        <span class="glass glass--pill" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <span class="glass__body">Pill · Liquid Glass</span>
+        </span>
       </div>
-    </section>
 
-    <section class="panel panel--gradient-1" aria-label="Degradado 1">
-      <div class="panel__card">
-        <h2>Degradado vivo</h2>
-        <p>Saturación y brillo del glass se notan más sobre colores saturados.</p>
+      <div class="stage__bg stage__bg--gradient-1"></div>
+      <div class="stage__layer">
+        <article class="glass glass--card" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <div class="glass__body">
+            <h2>Card</h2>
+            <p>Mismo material, otra forma. El blur y el tinte se leen sobre el degradado.</p>
+          </div>
+        </article>
       </div>
-    </section>
 
-    <section class="panel panel--photo-2" aria-label="Fondo foto 2">
-      <div class="panel__card">
-        <h2>Contraste alto</h2>
-        <p>Prueba el borde, las sombras y el especular mientras scrolleas.</p>
+      <div class="stage__bg stage__bg--photo-2"></div>
+      <div class="stage__layer">
+        <div class="glass glass--panel" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <div class="glass__body">
+            <h2>Panel</h2>
+            <p>Superficie más ancha para juzgar refracción, grano y especular mientras scrolleas.</p>
+            <p class="glass__hint">Prueba los presets Frost / Líquido abajo.</p>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="panel panel--gradient-2" aria-label="Degradado 2">
-      <div class="panel__card">
-        <h2>Frost vs líquido</h2>
-        <p>Usa los presets: frost (más blur/opacidad) o líquido (más saturate/specular).</p>
+      <div class="stage__bg stage__bg--gradient-2"></div>
+      <div class="stage__layer stage__layer--cluster">
+        <span class="glass glass--pill" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <span class="glass__body">Frost</span>
+        </span>
+        <span class="glass glass--pill" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <span class="glass__body">Líquido</span>
+        </span>
+        <article class="glass glass--card glass--card-sm" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <div class="glass__body">
+            <h2>Cluster</h2>
+            <p>Varias formas, un solo material compartido por variables CSS.</p>
+          </div>
+        </article>
       </div>
-    </section>
 
-    <section class="panel panel--photo-3" aria-label="Fondo foto 3">
-      <div class="panel__card">
-        <h2>Safe area</h2>
-        <p>En iPhone/iPad el header respeta <code>env(safe-area-inset-*)</code>.</p>
+      <div class="stage__bg stage__bg--photo-3"></div>
+      <div class="stage__layer">
+        <div class="glass glass--panel" data-glass>
+          <span class="glass__noise" aria-hidden="true"></span>
+          <span class="glass__specular" aria-hidden="true"></span>
+          <div class="glass__body">
+            <h2>Safe area</h2>
+            <p>En iPhone / iPad el lab respeta <code>env(safe-area-inset-*)</code>.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="controls-section" id="controles">
       <h2>Controles en vivo</h2>
-      <p class="controls-intro">Todos los valores actualizan variables CSS del header. Optimizado para Safari (iPhone, iPad, Mac).</p>
+      <p class="controls-intro">
+        Todos los valores actualizan variables CSS del material
+        (<code>.glass</code>). Optimizado para Safari (iPhone, iPad, Mac).
+      </p>
 
       <div class="presets" role="group" aria-label="Presets de sensación">
         <button type="button" class="preset" data-preset="apple" id="presetApple">Apple-ish</button>
@@ -165,8 +178,8 @@
           <input type="range" id="noise" min="0" max="0.45" step="0.01" value="0.12" />
         </label>
         <label class="ctrl">
-          <span class="ctrl__label">Radio de esquina (px) <output id="out-radius">18</output></span>
-          <input type="range" id="radius" min="0" max="40" step="1" value="18" />
+          <span class="ctrl__label">Radio de esquina (px) <output id="out-radius">22</output></span>
+          <input type="range" id="radius" min="0" max="40" step="1" value="22" />
         </label>
         <label class="ctrl">
           <span class="ctrl__label">Sombra interna <output id="out-inner-shadow">0.25</output></span>
@@ -182,15 +195,15 @@
     <section class="limits" id="limites">
       <h2>Límites honestos</h2>
       <p>
-        Esto emula Liquid Glass en la web con <strong>backdrop-filter</strong> (+ <code>-webkit-backdrop-filter</code>)
-        y filtros SVG (ruido / desplazamiento / canales RGB). <strong>No es</strong> el material de sistema
-        Liquid Glass de iOS 26 / visionOS: no hay lente real del compositor OS, ni el mismo muestreo
-        de capas detrás de la barra de estado.
+        Esto emula Liquid Glass en la web con <strong>backdrop-filter</strong>
+        (+ <code>-webkit-backdrop-filter</code>) y filtros SVG (ruido / desplazamiento / canales RGB).
+        <strong>No es</strong> el material de sistema Liquid Glass de iOS 26 / visionOS:
+        no hay lente real del compositor OS ni el mismo muestreo de capas detrás del chrome.
       </p>
       <ul>
         <li>Safari iOS/iPadOS soporta backdrop-filter; el rendimiento baja si el blur es muy alto o hay muchos filtros SVG activos.</li>
-        <li>La “refracción” aquí es feDisplacementMap + offsets RGB; no es óptica física.</li>
-        <li>Si un filtro falla, el header sigue siendo usable (tinte + borde + sombra).</li>
+        <li>La “refracción” aquí es <code>feDisplacementMap</code> + offsets RGB; no es óptica física.</li>
+        <li>Si un filtro falla, el material sigue siendo usable (tinte + borde + sombra).</li>
       </ul>
     </section>
 
