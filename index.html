@@ -14,6 +14,7 @@
     <div class="topbar__inner">
       <span class="topbar__mark" aria-hidden="true"></span>
       <span class="topbar__title">Liquid Glass · Material Lab</span>
+      <a class="topbar__link" href="#ab-compare">A/B</a>
       <a class="topbar__link" href="#controles">Controles</a>
     </div>
   </header>
@@ -125,6 +126,112 @@
       </div>
     </section>
 
+
+    <!-- A/B: Lock material vs Figma Pattern refraction (web approx) -->
+    <section class="ab" id="ab-compare" aria-label="Comparación A/B Lock vs Pattern refraction" data-peel-luma="dark">
+      <div class="ab__bg" aria-hidden="true"></div>
+      <div class="ab__content">
+        <header class="ab__header">
+          <p class="eyebrow">Comparación A/B · iPhone Safari</p>
+          <h2>Lock vs Pattern refraction</h2>
+          <p class="ab__note">
+            <strong>Qué es Pattern refraction (Figma):</strong> un shader WGSL que dobla la imagen
+            como si miraras a través de lentes de vidrio texturizado (Lenticular, Waves, etc.),
+            con Strength, Smoothness, Frost, Dispersion y Edge wrap.
+            <strong>Nuestro Lock:</strong> material frosted con <code>backdrop-filter</code>
+            (blur + saturate + tinte + borde) — no refracta ni desplaza píxeles.
+            Panel B es una <em>emulación web</em> del shader Figma «Pattern refraction»:
+            <strong>no es Glass nativo de Figma</strong>, ni pixel-perfect del WGSL.
+          </p>
+        </header>
+
+        <div class="ab__grid">
+          <!-- Panel A: Lock defaults, isolated from live controls -->
+          <article class="ab-card ab-card--a" aria-labelledby="ab-a-title">
+            <div class="ab-card__tag">Panel A</div>
+            <div class="glass glass--card ab-card__glass" data-ab-lock>
+              <span class="glass__noise" aria-hidden="true"></span>
+              <span class="glass__specular" aria-hidden="true"></span>
+              <div class="glass__body">
+                <h2 id="ab-a-title">Glass Lab Lock</h2>
+                <p>Defaults del material: opacity 0.15, blur 10px, saturate 1.15, brightness 1.10, contrast 1.05, border 0.25px @ 0.35, specular 0, noise 0.12, radius 20, inner 0.20, outer 0.</p>
+                <p class="glass__hint">Stack <code>.glass</code> · backdrop-filter.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Panel B: Pattern refraction web approx -->
+          <article class="ab-card ab-card--b" aria-labelledby="ab-b-title">
+            <div class="ab-card__tag">Panel B</div>
+            <div class="refract" id="refractCard" data-refract>
+              <svg class="refract__defs" width="0" height="0" aria-hidden="true" focusable="false">
+                <defs>
+                  <!-- Lenticular displacement map: vertical stripes (patternType 0) -->
+                  <filter id="refractDisplace" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.035 0.9" numOctaves="1" seed="2" result="noise" />
+                    <feComponentTransfer in="noise" result="stripes">
+                      <feFuncR type="discrete" tableValues="0 1 0 1 0 1 0 1" />
+                      <feFuncG type="discrete" tableValues="0 1 0 1 0 1 0 1" />
+                      <feFuncB type="discrete" tableValues="0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5" />
+                    </feComponentTransfer>
+                    <feDisplacementMap in="SourceGraphic" in2="stripes" scale="0" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                    <feColorMatrix in="displaced" type="matrix" values="
+                      1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 1 0" result="out" />
+                  </filter>
+                </defs>
+              </svg>
+
+              <div class="refract__frost" aria-hidden="true"></div>
+              <div class="refract__lenses" aria-hidden="true"></div>
+              <div class="refract__chroma refract__chroma--r" aria-hidden="true"></div>
+              <div class="refract__chroma refract__chroma--b" aria-hidden="true"></div>
+              <div class="refract__body">
+                <h2 id="ab-b-title">Pattern refraction</h2>
+                <p class="refract__label">Emulación web · shader Figma «Pattern refraction» · no nativo · no pixel-perfect</p>
+                <p>Aprox. Safari-first: frost vía backdrop-filter + crestas lenticulares CSS + fringe cromático leve. Sin puerto WGSL.</p>
+              </div>
+            </div>
+
+            <form class="refract-controls" id="refractForm" autocomplete="off" aria-label="Parámetros Figma Pattern refraction (aprox)">
+              <p class="refract-controls__title">Parámetros (defineProperties → web)</p>
+              <label class="ctrl">
+                <span class="ctrl__label">patternType <output id="out-patternType">Lenticular (0)</output></span>
+                <input type="range" id="patternType" min="0" max="0" step="1" value="0" disabled />
+                <span class="ctrl__hint">Solo Lenticular en esta aprox (perf iPhone).</span>
+              </label>
+              <label class="ctrl">
+                <span class="ctrl__label">amount / Strength <output id="out-amount">50</output></span>
+                <input type="range" id="amount" min="0" max="100" step="1" value="50" />
+              </label>
+              <label class="ctrl">
+                <span class="ctrl__label">seamlessness / Smoothness <output id="out-smoothness">0</output></span>
+                <input type="range" id="smoothness" min="0" max="100" step="1" value="0" />
+              </label>
+              <label class="ctrl">
+                <span class="ctrl__label">frost <output id="out-frost">0</output></span>
+                <input type="range" id="frost" min="0" max="100" step="1" value="0" />
+              </label>
+              <label class="ctrl">
+                <span class="ctrl__label">iorDispersion / Dispersion <output id="out-dispersion">4</output></span>
+                <input type="range" id="dispersion" min="0" max="20" step="1" value="4" />
+              </label>
+              <div class="refract-readouts" role="group" aria-label="Fijos del shader">
+                <span>Edge wrap: <strong>Clamp</strong></span>
+                <span>Transform: <strong>center default</strong></span>
+              </div>
+              <p class="refract-limits">
+                Límites: no desplaza el backdrop real como el WGSL; crestas + blur + fringe
+                simulan la lectura. Preferimos rendimiento en iPhone.
+              </p>
+            </form>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="controls-section" id="controles" data-peel-luma="light">
       <h2>Controles en vivo</h2>
       <p class="controls-intro">
@@ -201,7 +308,8 @@
       </p>
       <ul>
         <li>Safari iOS/iPadOS soporta backdrop-filter; el rendimiento baja si el blur es muy alto.</li>
-        <li>No hay distorsión ni aberración cromática: el stack es profesional (blur + color + borde + luz).</li>
+        <li>El material Lock no tiene distorsión ni aberración: stack profesional (blur + color + borde + luz).</li>
+        <li>La sección <a href="#ab-compare">A/B</a> añade Panel B (aprox. Pattern refraction): crestas CSS + frost blur + fringe leve — no es el shader WGSL de Figma ni Glass nativo.</li>
         <li>Si <code>backdrop-filter</code> no está disponible, el material sigue usable (tinte + borde + sombra).</li>
       </ul>
     </section>

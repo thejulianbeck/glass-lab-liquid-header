@@ -242,4 +242,46 @@
     schedule();
     window.addEventListener("load", schedule, { once: true });
   }
+
+  /* ——— Panel B: Pattern refraction web-approx params ———
+     Maps Figma defineProperties (Strength/Smoothness/Frost/Dispersion)
+     onto CSS custom properties on #refractCard. Honest approx only. */
+  const refractCard = document.getElementById("refractCard");
+  const refractForm = document.getElementById("refractForm");
+  if (refractCard && refractForm) {
+    const refractMap = {
+      amount: { css: "--refract-amount", out: "out-amount", decimals: 0 },
+      smoothness: { css: "--refract-smoothness", out: "out-smoothness", decimals: 0 },
+      frost: { css: "--refract-frost", out: "out-frost", decimals: 0 },
+      dispersion: { css: "--refract-dispersion", out: "out-dispersion", decimals: 0 },
+    };
+
+    const displaceMap = refractCard.querySelector("#refractDisplace feDisplacementMap");
+
+    function applyRefract(id, raw) {
+      const meta = refractMap[id];
+      if (!meta) return;
+      const num = Number(raw);
+      refractCard.style.setProperty(meta.css, String(num));
+      const out = document.getElementById(meta.out);
+      if (out) out.textContent = fmt(num, meta.decimals);
+      // Strength → displace the lenticular overlay only (not true WGSL backdrop warp)
+      if (id === "amount" && displaceMap) {
+        displaceMap.setAttribute("scale", String(Math.round(num * 0.18)));
+      }
+    }
+
+    refractForm.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!(t instanceof HTMLInputElement) || t.type !== "range") return;
+      if (t.id === "patternType") return;
+      applyRefract(t.id, t.value);
+    });
+
+    Object.keys(refractMap).forEach((id) => {
+      const input = document.getElementById(id);
+      if (input) applyRefract(id, input.value);
+    });
+  }
+
 })();

@@ -4,7 +4,7 @@ Safari-first web lab that emulates Apple-style **Liquid Glass** (cristal / frost
 
 **Live:** https://thejulianbeck.github.io/glass-lab-liquid-header/
 
-Not a full site or header product — just the material lab. See [EFFECT-SPEC.md](./EFFECT-SPEC.md).
+Includes an **A/B** section: Glass Lab Lock vs a Safari-friendly web approx of Figma **Pattern refraction** (not native Glass / not WGSL). See [EFFECT-SPEC.md](./EFFECT-SPEC.md).
 
 ## Local
 

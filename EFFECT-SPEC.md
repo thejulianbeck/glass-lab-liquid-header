@@ -47,7 +47,8 @@
 ## What NOT to do
 - Do not frame the lab as a sticky-header product or redesign Ignara Universe.
 - Do not claim OS-level Liquid Glass / iOS 26 / visionOS material parity.
-- Do not add chromatic aberration, SVG displacement / `feDisplacementMap`, or refraction distortion.
+- Do not add refraction / chromatic aberration to the **Lock / `.glass` material** stack.
+- Panel B in `#ab-compare` is the only place that approximates Figma Pattern refraction (CSS lenticular ridges + frost blur + light chromatic fringe). Label it as web approx, not Figma native Glass / not WGSL pixel-perfect.
 - Do not omit `-webkit-backdrop-filter`.
 - Do not leave the page broken if `backdrop-filter` fails — tint/border/shadow remain.
 - Do not let the fixed peel cover the controls section.
@@ -61,9 +62,46 @@
 - [x] Spanish (LatAm neutral, tú) UI labels.
 - [x] Honest limits note in page UI.
 - [x] Safari-first prefixes + safe-area + graceful degrade.
-- [x] No refraction / chromatic aberration / SVG displacement path.
+- [x] Lock material has no refraction; A/B Panel B is labeled web approx of Pattern refraction only.
+- [x] A/B side-by-side over shared photo so Lock vs Pattern refraction approx can be compared on phone.
 - [x] Public GitHub repo + Pages URL.
 - [x] This EFFECT-SPEC committed alongside the lab.
+
+
+## A/B comparison — Lock vs Pattern refraction (web approx)
+
+Section `#ab-compare`. **Does not claim Figma native Glass.**
+
+| Panel | What it is |
+|---|---|
+| **A — Glass Lab Lock** | Existing `.glass` stack with locked defaults (opacity 0.15, blur 10px, saturate 1.15, brightness 1.10, contrast 1.05, border 0.25px @ 0.35, specular 0, noise 0.12, radius 20, inner 0.20, outer 0). Isolated via `[data-ab-lock]` so live controls do not change the A/B card. |
+| **B — Pattern refraction (web approx)** | Honest label: emulación web del shader Figma «Pattern refraction». Params from Figma defineProperties exposed as sliders/readouts. |
+
+### Panel B parameter map (Figma → web)
+
+| Figma property | Default | Web mapping |
+|---|---|---|
+| patternType | Lenticular (0) | Vertical CSS `repeating-linear-gradient` ridges only (other patterns not ported — iPhone perf) |
+| amount / Strength | 50 | Ridge contrast + slight `scale()` on card (`--refract-amount`) |
+| seamlessness / Smoothness | 0 | Softens ridge edges / stripe spacing (`--refract-smoothness`) |
+| frost | 0 | Extra `backdrop-filter` blur + optional noise overlay (`--refract-frost`) |
+| iorDispersion / Dispersion | 4 | Light R/B inset fringe via layered shadows (`--refract-dispersion`); Safari-safe, kept subtle |
+| Edge wrap | Clamp | `overflow: hidden` on `.refract` |
+| Transform | center default | `transform-origin: center` (no on-canvas handle) |
+
+### What B implements vs Figma WGSL
+
+| Web Panel B | Figma Pattern refraction (WGSL) |
+|---|---|
+| Samples backdrop via `backdrop-filter` blur/saturate | Full per-pixel refraction through lens SDF / pattern in shader |
+| Fake lenticular look with CSS stripe overlays | True image warp along Lenticular / Waves / Zigzag / etc. |
+| Strength → ridge contrast + tiny scale | Strength → displacement magnitude of sampled texels |
+| Dispersion → cheap R/B inset fringe | Spectral IOR split along lens edges |
+| Frost → blur + static noise | Shader frost / grain haze |
+| Clamp via CSS overflow clip | Edge wrap modes (Zero / Clamp / Repeat / Mirror) |
+| No WGSL / WebGL port | GPU shader path inside Figma |
+
+**Spanish LA note (in UI):** Pattern refraction dobla la imagen como lentes de vidrio texturizado; Lock es frosted `backdrop-filter` sin desplazamiento de píxeles.
 
 ## Honest web vs Apple system limits
 | Web lab | Apple system Liquid Glass |
